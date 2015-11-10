@@ -1,0 +1,22 @@
+!#/bin/bash
+
+doLock=false
+
+while [ true ]
+do
+    status="$(ioreg -r -k AppleClamshellState -d 4 | grep AppleClamshellState | grep Yes)"
+
+    length=${#status}
+
+    if [ $length -gt 0 ]
+    then
+        doLock=true
+    elif [ $length -eq 0 ] && [ $doLock = true ]
+    then
+        doLock=false
+
+        /System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend
+    fi
+
+    sleep 5
+done
